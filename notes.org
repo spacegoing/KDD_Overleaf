@@ -1,0 +1,112 @@
+** DARNN
+
+- 为何不用其它模块
+- Novelty不够
+- 加入self attention
+
+- Holistic Price Learner: 代替旧有
+- tech inds 会被trap; 失效
+- multi-tasks
+- Higher order MRF
+- clique实际含义; 能够encode expert knowledge
+- 解法
+- end2end training
+
+- baseline
+- 证明HPL有效：no multi-tasks, hand-crafted classification; raw
+  encoder-decoder; attention based; darnn; no higher order mrf;
+- 比较Higher Order MRF有效
+- Cliques 证监会行业分类、申万行业分类、同花顺分类
+
+- 模型本身：
+- ablation study: 只做trending; volatility
+
+- Interpretation: visualization
+- 秦瑶实验 sensitive analysis (parameters)
+
+
+*** review
+
+- review encoder-decoder self attention darnn
+- cnn rnn graph mrf
+- nn; higher order; financial data我们不一样
+- 实验数据, dataset 类别 KDD18 djs写法
+- 实验comb 表
+
+** args
+*** logic
+- 单一股价预测方法 (KDD17)
+- 单一成分股预测能力有限
+- 风格轮动、主题投资、行业轮动成因(中国a股市场的行业轮动现象分析)(dt_sr)
+- 多个国家都有(中国a股市场的行业轮动现象分析)
+- 行业、主题clique linkage effect (DMD-LSTM)，粗粒度的划分对表现有影响（事件驱动投资策略及其影响因素的实证研究)
+- 表现不同步，leading lag effect (??)
+
+- 市场消化信息时间很快，分钟内 intra day trading invaluable (4.04 中国股票市场冲击下信息融入研究)
+
+- TA失效 需要新的feature(ta)
+- Dynamic Asset Allocation Using Systematic Sector Rotation
+
+
+
+- (dt_sr) lead-lag relationship: (1.3) stock price are horizontally or
+  vertically related. 3 reasons (dynamics) for related movement.
+  - 有些股票早，有些晚。抓住早股票需要理解自然语言、金融理论，现
+    在不可能。希望通过观测早股票，通过lead lag效应，预测跟随股票、
+    行业的涨跌
+- (dt_sr) sector rotation origin, reason, empirical results 1~3 para
+- (dt_sr) Chinese capital market immature irrational, easier to predict.
+  proportion of retail investors in Chinese(1.4) stock market is
+  relatively high.
+  divergence of market performance.
+- (dt_sr) 1.4 informed traders among institutional investors joint
+  together to lure retail traders to gain excess profit by
+  manufacturing the stock market[10]
+
+*** Missing Literature
+- 使用近期新闻举例
+*** MISC
+dt_sr: https://books.google.com.au/books?hl=en&lr=&id=IROhDQAAQBAJ&oi=fnd&pg=PA194&dq=Sector+Rotation+Investment+algorithm+trading&ots=A8NWkYjHMj&sig=VNEPW3nkQN6hfKvGx3txJk-6dWs#v=onepage&q&f=false
+ta(全文阅读xml): 金融市场技术分析有效性检验的进展评介:http://kns.cnki.net/KXReader/Detail?TIMESTAMP=636827951083452500&DBCODE=CJFD&TABLEName=CJFD2001&FileName=GLGU200102016&RESULT=1&SIGN=GZb9peXIeM8ANL1eQA54Z4KDJlc%3d&UID=WEEvREdxOWJmbC9oM1NjYkZCbDdrdXdTREVvcHVzM3pXWmxSSkk2UThpSWc=$R1yZ0H6jyaa0en3RxVUd8df-oHi7XMMDo7mtKT6mSmEvTuk11l2gFA!!&filetitle=%E9%87%91%E8%9E%8D%E5%B8%82%E5%9C%BA%E6%8A%80%E6%9C%AF%E5%88%86%E6%9E%90%E6%9C%89%E6%95%88%E6%80%A7%E6%A3%80%E9%AA%8C%E7%9A%84%E8%BF%9B%E5%B1%95%E8%AF%84%E4%BB%8B_%E5%94%90%E5%BD%A7
+
+
+** Exp
+- https://link.springer.com/chapter/10.1007/978-3-319-72745-5_29
+- Empirical Research of China’s Stock Index Volatility
+
+- https://www.sciencedirect.com/science/article/pii/S0957417418301416
+- realized volatility
+  
+- multi-task darnn -> self-attention
+- 技术上贡献
+
+- higher order interaction 总结贡献
+- 实验
+  - latent var 如何解决higher order interaction 问题
+  - Hidden CRF 通过解释 hidden state 解释发生了什么
+
+- 3.1 \phi notation \w
+- 实验描述: github code; dataset 统计
+- task 是什么 实验要做什么; 多少涨、多少跌；training 和 exp setting
+- 为什么没用pairwise
+- baseline: 添加新的模型
+- 结果:
+
+- Ablation Study: sensitive params
+
+Exp 设计:
+- Related Work 找 Baseline
+- 根据 contribution 突出原因
+  - multi比single
+  - higher order比没有
+  - self 比 darnn
+- Existing 总结缺点; 跟别人不同的是什么; 贡献 效果、效率
+- 时间序列learning
+
+问题:
+- zooming network所解决的问题
+- Positional Encoding
+  
+
+总结问题list
+
