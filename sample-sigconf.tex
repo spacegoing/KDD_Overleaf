@@ -500,61 +500,90 @@ section~\ref{sec:opt}.
 \section{Methods}
 \label{sec:meth}
 
-In this section, we introduce the multi-task \textcolor{red}{RNN-MRFs} architecture which is constructed
-with two parts. The first part is a ``Multi-task Market Price
-Learner'', which consists of three dual stage attention based recurrent neural network (DARNN)~\cite{qin2017dual} modules. The goal of the
-first part is to tackle the first challenge, \textit{i.e.}, automatically extracting
-informative representations of the raw market price
+In this section, we introduce the multi-task RNN-MRFs
+architecture which is constructed with two parts. The first part
+is a ``Multi-task Market Price Learner'', which consists of three
+dual stage attention based recurrent neural network
+(DARNN)~\cite{qin2017dual} modules. The goal of the first part is
+to tackle the first challenge, \textit{i.e.}, automatically
+extracting informative representations of the raw market price
 without considering any hand-crafted feature and technical
-indicator. The second part is an
-``Intra-clique Predictor'' which is a binary Markov random fields
-model which incorporates weighted higher order energy functions. Those
-higher order functions are applied to sector lists (used as maximum cliques) defined by financial experts. The domain knowledge about leading stocks and
-lagging stocks are assigned as higher and lower weights in energy
-function accordingly. The goal of this part is to tackle the
-second and third challenges. Unary features learned by DARNN modules are
-jointly employed to maintain higher order consistency among stocks belonging to the same sector. The detailed architecture are shown in Figure~\ref{fig:mrfrnn}.
+indicator. The second part is an ``Intra-clique Predictor'' which
+is a binary Markov random fields model which incorporates
+weighted higher order energy functions. Those higher order
+functions are applied to sector lists (used as maximum cliques)
+defined by financial experts. The domain knowledge about leading
+stocks and lagging stocks are assigned as higher and lower
+weights in energy function accordingly. The goal of this part is
+to tackle the second and third challenges. Unary features learned
+by DARNN modules are jointly employed to maintain higher order
+consistency among stocks belonging to the same sector. The
+detailed architecture are shown in Figure~\ref{fig:mrfrnn}.
 
 
 \subsection{Multi-task Market Price Learner}
 \label{sec:mmpl}
 
-%Extracting informational price changes from market price data has been a long existing challenge in stock trading industry. Researchers have developed hundreds of technical indicators~\cite{kirkpatrick2010technical} to recognize trend or predict volatility in future stock price movement. We are inspired by the significant progress in computer vision area where researchers developed neural networks which outperform hand-crafted features such as SIFT, HOG, and SURF. In this paper we try to investigate a multi-task hierarchical RNN neural networks in order to replace those hand-crafted technical indicators.
+% Extracting informational price changes from market price data
+% has been a long existing challenge in stock trading industry.
+% Researchers have developed hundreds of technical
+% indicators~\cite{kirkpatrick2010technical} to recognize trend
+% or predict volatility in future stock price movement. We are
+% inspired by the significant progress in computer vision area
+% where researchers developed neural networks which outperform
+% hand-crafted features such as SIFT, HOG, and SURF. In this
+% paper we try to investigate a multi-task hierarchical RNN
+% neural networks in order to replace those hand-crafted
+% technical indicators.
 
 Stock price movement can be interpreted from many aspects such as
 investors sentiment, temporal patterns and cycles, flow of funds
-and market strength, \textit{etc}. Ideal features should represent those
-aspects as much as possible. Multi-task learning has shown its effectiveness to learn inductive knowledge among
-tasks and improve performance as well as
-generalization capability~\cite{caruana1993multitask}. Therefore, we propose
-a multi-task RNN framework entitled ``Multi-task Market Price Learner (MMPL)'' to tackle the first challenge: extracting
+and market strength, \textit{etc}. Ideal features should
+represent those aspects as much as possible. Multi-task learning
+has shown its effectiveness to learn inductive knowledge among
+tasks and improve performance as well as generalization
+capability~\cite{caruana1993multitask}. Therefore, we propose a
+multi-task RNN framework entitled ``Multi-task Market Price
+Learner (MMPL)'' to tackle the first challenge: extracting
 informational representations from raw market price.
 
 However, as noted elsewhere
-\cite{caruana1993multitask,ruder2017overview}, there is a lack
-of theory on underpinning a diverse set of tasks and the hierarchical
-architecture of the chosen tasks. We follow this intuition to construct our model. Most technical indicators fall into four
-categories: trend, momentum, volatility and
+\cite{caruana1993multitask,ruder2017overview}, there is a lack of
+theory on underpinning a diverse set of tasks and the
+hierarchical architecture of the chosen tasks. We follow this
+intuition to construct our model. Most technical indicators fall
+into four categories: trend, momentum, volatility and
 volume~\cite{kirkpatrick2010technical}. Since volume is included
-in input for all low level tasks and we assume
-that momentum information can be learned by high level task, we
-propose an architecture that using trend and volatility tasks as
-our low level tasks and price movement prediction (upward
-or downward) as the high level task.
+in input for all low level tasks and we assume that momentum
+information can be learned by high level task, we propose an
+architecture that using trend and volatility tasks as our low
+level tasks and price movement prediction (upward or downward) as
+the high level task.
 
-%As an early work under this direction, the main idea is to test effectiveness of multi-task framework on stock dataset rather than design a dedicated neural network, we directly borrow the idea from DARNNs~\cite{qin2017dual} as our basic module because of its ability of attending to multiple features. To the best of our knowledge, we are the first work proposing a multi-task neural network on stock market data.
+% As an early work under this direction, the main idea is to test
+% effectiveness of multi-task framework on stock dataset rather
+% than design a dedicated neural network, we directly borrow the
+% idea from DARNNs~\cite{qin2017dual} as our basic module because
+% of its ability of attending to multiple features. To the best
+% of our knowledge, we are the first work proposing a multi-task
+% neural network on stock market data.
 
 The ``Multi-task Market Price Learner(MMPL)'' contains two
-levels, three modules of DARNNs. DARNNs~\cite{qin2017dual} are used as our basic module not only because of its capability of selecting relevant deriving series as well as temporal features, but also due to its superior performance for time series prediction compared to LSTM \textcolor{red}{cite} and attention based LSTM \textcolor{red}{cite}. Specifically, bottom level contains two
-separate DARNN modules. They are supervised by lower level tasks
-which aim to predict future price as well as volatility
-based upon the raw market price data. The key difference among those modules
-is the loss function. At top level, it is supervised by a high-level
-task that learns to use representations extracted by two bottom
-modules as well as raw market price data to predict positive /
-negative price movement of stocks. Logits of the last layer are
-passed to Intra-clique Predictor described in
-section~\ref{sec:srp} as unary features.
+levels, three modules of DARNNs. DARNNs~\cite{qin2017dual} are
+used as our basic module not only because of its capability of
+selecting relevant deriving series as well as temporal features,
+but also due to its superior performance for time series
+prediction compared to LSTM~\cite{hochreiter1997long} and
+attention based LSTM~\cite{attention}. Specifically, bottom level
+contains two separate DARNN modules. They are supervised by lower
+level tasks which aim to predict future price as well as
+volatility based upon the raw market price data. The key
+difference among those modules is the loss function. At top
+level, it is supervised by a high-level task that learns to use
+representations extracted by two bottom modules as well as raw
+market price data to predict positive / negative price movement
+of stocks. Logits of the last layer are passed to Intra-clique
+Predictor described in section~\ref{sec:srp} as unary features.
 
 \begin{figure}[t]
   \centering
@@ -572,9 +601,13 @@ series of $T$ time-steps and $\bx_t=(x_t^1,x_t^2 ,\dots
 ,x_t^N)\in \reals^N$ denotes a snapshot at time-step $t$ of all
 $N$ features.
 
-For both DARNN modules at the low level, the input matrix is a concatenation of exogenous matrix $\bX \in \reals^{5\times T}$ which contains $5$ exogenous driving series: opening price, low price, high price, volume, amount and $1$ target series $\by =
-(y_1,y_2,\dots,y_T) \in \reals^T$. The aim of these two modules are
-to predict target series $y_{t+p}$ in the next $p$ time steps:
+For both DARNN modules at the low level, the input matrix is a
+concatenation of exogenous matrix $\bX \in \reals^{5\times T}$
+which contains $5$ exogenous driving series: opening price, low
+price, high price, volume, amount and $1$ target series $\by =
+(y_1,y_2,\dots,y_T) \in \reals^T$. The aim of these two modules
+are to predict target series $y_{t+p}$ in the next $p$ time
+steps:
 
 $$\hat{y}_{t+p} = \text{DARNN}(y_1,\dots,y_{t},x_1,\dots,x_t)$$
 
@@ -585,16 +618,16 @@ standard deviation of closing price over $M$ constant time-steps.
 In our implementation we set $M=10$. We use Mean Squared Error
 (MSE) as the loss function to train those two modules separately.
 
-To construct the high level DARNN module, which aims to predict the price movement,
-we concatenate context vectors $\bc_T$ from each of low level DARNN
-module's encoder and raw market price matrix as
-the input. The target series $\by^{\text{binary}}$ is
+To construct the high level DARNN module, which aims to predict
+the price movement, we concatenate context vectors $\bc_T$ from
+each of low level DARNN module's encoder and raw market price
+matrix as the input. The target series $\by^{\text{binary}}$ is
 constructed by the sign function $y_t^{\text{binary}} =
 sign(y_{t+p}-y_t)$ where $y_t$ denotes closing price at time-step
 $t$. We use cross-entropy as loss function to train the final
-$\text{DARNN}_{\text{multi}}$. Logits (outputs before going through
-\emph{softmax}) of $\text{DARNN}_{\text{multi}}$ are then passed to 
-``Intra-clique Predictor'' as unary features.
+$\text{DARNN}_{\text{multi}}$. Logits (outputs before going
+through \emph{softmax}) of $\text{DARNN}_{\text{multi}}$ are then
+passed to ``Intra-clique Predictor'' as unary features.
 
 In order to train MMPL together with MRFs in an end-to-end
 manner, we follow the subgradient method proposed by
@@ -630,12 +663,19 @@ Other configurations stay the same with their algorithm.
 \subsection{Intra-clique Predictor}
 \label{sec:srp}
 
-In this section, we show how to construct an ``Intra-clique Predictor" to model lead-lag relationships and address the other two challenges as mentioned in the introduction. Specifically,  we present a binary Markov Random Fields (MRFs) with
-weighted lower linear envelopes as higher order (when the clique
-contains more than two nodes) energy
-functions. Note that the algorithm proposed here is a general framework for classification tasks. Besides time series classification, it can also be applied to computer vision tasks.
+In this section, we show how to construct an ``Intra-clique
+Predictor" to model lead-lag relationships and address the other
+two challenges as mentioned in the introduction. Specifically, we
+present a binary Markov Random Fields (MRFs) with weighted lower
+linear envelopes as higher order (when the clique contains more
+than two nodes) energy functions. Note that the algorithm
+proposed here is a general framework for classification tasks.
+Besides time series classification, it can also be applied to
+computer vision tasks.
 
-%In section~\ref{sec:opt} we will discuss learning the parameters under the latent structural SVM framework and also how to back-prop gradients to neural networks. 
+% In section~\ref{sec:opt} we will discuss learning the
+% parameters under the latent structural SVM framework and also
+% how to back-prop gradients to neural networks.
 
 
 \subsubsection{Higer Order Energy: The Weighted Lower Linear
@@ -974,48 +1014,6 @@ those constraints.
 \subsection{Latent Structural SVM Learning}
 \label{sec:mrflssvm_learning_algo}
 
-\begin{algorithm}
-  \begin{algorithmic}[1]
-    \STATE{Set $MaxIter = 100$}
-    \STATE{ {\bf input} training set $\{\by_i\}_{i=1}^{n}$, regularization constant $C > 0$,
-      and tolerance $\epsilon \geq 0$}
-    \STATE{Initialize $\btheta$ using \algref{alg:init_theta}}
-    \REPEAT \STATE{CCCP Outer Loop}
-    \STATE{Set $iter = 0$}
-    \FOR{each training example, $i = 1, \ldots, n$}
-    \STATE{compute $ \bz_i^*=\argmax_{\mathbf{z} \in \mathcal{Z}}
-      \theta \cdot \psi(\mathbf{y}_i,\mathbf{z}) $}
-    \ENDFOR
-
-    \STATE{ {\bf initialize} active constraints set ${\cal C}_i = \{ \}$ for all $i$}
-    \REPEAT \STATE{CCCP Inner Loop}
-
-    \STATE{solve the quadratic programming problem in
-      equation~\ref{eq:mrflssvm_object} with respect to active
-      constraints set ${\cal C}_i$ for all $i$ and concavity constraints
-      $A\btheta\geq \epsilon$ to get
-      $\hat{\btheta}$ and $\hat{\bxi}$}
-
-    \FOR{each training example, $i = 1, \ldots, n$}
-    \STATE{compute $\hat{\by_i},\hat{\bz_i} = \argmin_{\by}
-      E(\by,\bz; \hat{\btheta}) - \Delta(\by, \bz, \by_i)$}
-    \IF{$\hat{\xi}_i + \epsilon \!<\! \Delta(\hat{\by_i},
-      \hat{\bz_i}, \by_i) -
-      E(\hat{\by_i},\hat{\bz_i}; \hat{\btheta}) + E(\by_i, \bz_i^*; \hat{\btheta})$}
-    \STATE{${\cal C}_i \leftarrow {\cal C}_i \cup \{{\by}_i^\star\}$}
-    \ENDIF
-    \ENDFOR
-    \UNTIL{no more violated constraints}
-    \STATE{ {\bf return} parameters $\hat{\btheta}$}
-    \STATE{Set $iter = iter+1$}
-
-    \UNTIL{$iter\geq MaxIter$}
-    \STATE{ {\bf return} parameters $\hat{\btheta}$}
-  \end{algorithmic}
-  \caption{\label{alg:learning} Learning lower linear envelope
-    MRFs with latent variables.}
-\end{algorithm}
-
 With the inner product formulation
 (equation~\eqref{eq:llsvm_innerprod_energy}) of higher order
 energy function in hand, we now able to develop our latent
@@ -1205,14 +1203,16 @@ described in appendix \ref{sec:train_detail}.
 \label{sec:res}
 
 In order to demonstrate the effectiveness of our framework, we
-compare 3 baseline methods, \textit{i.e.}, LSTM,
-LSTM Encoder\_Decoder, and DARNN \textcolor{red}{provide references to these method, refer to DARNN paper} on 3 different Chinese Securities Indexes with
-and without technical analysis indicators as inputs. Results are
-summarized in Table~\ref{tab:result}. All results are reported
-over the test sets. We select four metrics (Accuracy, Precision, Recall and F1 Score) as evaluation metrics
-to justify the effectiveness of the proposed approach. They are
-calculated by collecting all predicted labels of constituent
-stocks in each CSI index.
+compare 3 baseline methods, \textit{i.e.},
+LSTM~\cite{hochreiter1997long}, attention based LSTM
+Encoder\_Decoder~\cite{attention}, and DARNN~\cite{qin2017dual}
+on 3 different Chinese Securities Indexes with and without
+technical analysis indicators as inputs. Results are summarized
+in Table~\ref{tab:result}. All results are reported over the test
+sets. We select four metrics (Accuracy, Precision, Recall and F1
+Score) as evaluation metrics to justify the effectiveness of the
+proposed approach. They are calculated by collecting all
+predicted labels of constituent stocks in each CSI index.
 
 
 \begin{table*}[t]
@@ -1247,18 +1247,19 @@ Data Set                   & Models                          & \multicolumn{12}{
 As mentioned earlier, to demonstrate effectiveness of multi-task
 framework, we use \textbf{Indicator} dataset, which contains both
 market price data and technical analysis indicators as inputs for
-baseline approaches and \textbf{Market} dataset which only contains market
-price data as inputs for MMPL (multi-task RNN) as well as baseline methods. For DARNN, we use a hidden size of $128$. MMPL's
-configuration is described in section~\ref{sec:multi_train}. As
-we can see in Table~\ref{tab:result}, single task models (LSTM,
-LSTM Encoder\_Decoder, DARNN)\textcolor{red}{provide references to these method, refer to DARNN paper}
- tested on \textbf{Market} dataset (without
-technical analysis indicators as inputs) generally have worse
-performance on all 4 metrics. In particular, performance of DARNN
-models tested on \textbf{Indicator} dataset is consistently
+baseline approaches and \textbf{Market} dataset which only
+contains market price data as inputs for MMPL (multi-task RNN) as
+well as baseline methods. For DARNN, we use a hidden size of
+$128$. MMPL's configuration is described in
+section~\ref{sec:multi_train}. As we can see in
+Table~\ref{tab:result}, single task models (LSTM, LSTM
+Encoder\_Decoder, DARNN) tested on \textbf{Market} dataset
+(without technical analysis indicators as inputs) generally have
+worse performance on all 4 metrics. In particular, performance of
+DARNN models tested on \textbf{Indicator} dataset is consistently
 better than the ones on \textbf{Market} dataset. This proves that
 even with hand-crafted features, deep learning models can still
-benefit from diversified and complementary features. 
+benefit from diversified and complementary features.
 
 To test the effectiveness of multi-task framework, we conduct ablation study with only one low level task ($\text{DARNN}_\text{trend}$ or $\text{DARNN}_\text{volat}$) 
 together with the high level task module $\text{DARNN}_\text{multi}$. Results
@@ -1279,7 +1280,7 @@ capital stocks which are less liquid and contains much more noisy movements.
 
 During training time, our algorithm converges in from 4 to 19
 CCCP outer loops. The average inference time of graph-cut
-algorithm is 34 seconds. \textcolor{red}{Add the server GPU specifications, e.g., on ** platform with ** GPU}
+algorithm is 34 seconds.
 
 \subsubsection{Visualization of higher-order consistency}
 
@@ -1381,15 +1382,15 @@ Our work provides a number of directions for future research. In this work we pr
 %% identification of the section in the article metadata, and the
 %% consistent spelling of the heading.
 \begin{acks}
-We would like to thank Stephen Gould very much for his great knowledge and patience
-explaining higer-order MRFs.
-We would also like to thank Peerajak Witoonchart for his explanation
-of sub-gradient SSVMs algorithm.
+  We would like to thank Stephen Gould very much for explaining
+  higer-order MRFs. We would also like to thank Peerajak
+  Witoonchart for his explanation of sub-gradient SSVMs
+  algorithm.
 
-We acknowledge data provision and MQD research infrastructure support from CMCRC. 
-Li is grateful for funding from the CMCRC.
-This work is also funded by China Hebei Provincial Department of Human Resources. 
-Project ID: CL201723.
+  We acknowledge data provision and MQD research infrastructure
+  support from CMCRC. Li is grateful for funding from the CMCRC.
+  This work is also funded by China Hebei Provincial Department
+  of Human Resources. Project ID: CL201723.
 \end{acks}
 
 %%
@@ -1401,6 +1402,7 @@ Project ID: CL201723.
 %%
 %% If your work has an appendix, this is the place to put it.
 \newpage
+
 \appendix
 
 \section{Training Details}
@@ -1511,6 +1513,48 @@ lagging stocks should have lower weights. In our implementation,
 we use constituents' weight defined in CSI200, CSI500 and CSI300
 as their weights in equation~(\ref{eqn:potential2}) and normalize
 them to ensure the summation equals $1$.
+
+\begin{algorithm}
+  \begin{algorithmic}[1]
+    \STATE{Set $MaxIter = 100$}
+    \STATE{ {\bf input} training set $\{\by_i\}_{i=1}^{n}$, regularization constant $C > 0$,
+      and tolerance $\epsilon \geq 0$}
+    \STATE{Initialize $\btheta$ using \algref{alg:init_theta}}
+    \REPEAT \STATE{CCCP Outer Loop}
+    \STATE{Set $iter = 0$}
+    \FOR{each training example, $i = 1, \ldots, n$}
+    \STATE{compute $ \bz_i^*=\argmax_{\mathbf{z} \in \mathcal{Z}}
+      \theta \cdot \psi(\mathbf{y}_i,\mathbf{z}) $}
+    \ENDFOR
+
+    \STATE{ {\bf initialize} active constraints set ${\cal C}_i = \{ \}$ for all $i$}
+    \REPEAT \STATE{CCCP Inner Loop}
+
+    \STATE{solve the quadratic programming problem in
+      equation~\ref{eq:mrflssvm_object} with respect to active
+      constraints set ${\cal C}_i$ for all $i$ and concavity constraints
+      $A\btheta\geq \epsilon$ to get
+      $\hat{\btheta}$ and $\hat{\bxi}$}
+
+    \FOR{each training example, $i = 1, \ldots, n$}
+    \STATE{compute $\hat{\by_i},\hat{\bz_i} = \argmin_{\by}
+      E(\by,\bz; \hat{\btheta}) - \Delta(\by, \bz, \by_i)$}
+    \IF{$\hat{\xi}_i + \epsilon \!<\! \Delta(\hat{\by_i},
+      \hat{\bz_i}, \by_i) -
+      E(\hat{\by_i},\hat{\bz_i}; \hat{\btheta}) + E(\by_i, \bz_i^*; \hat{\btheta})$}
+    \STATE{${\cal C}_i \leftarrow {\cal C}_i \cup \{{\by}_i^\star\}$}
+    \ENDIF
+    \ENDFOR
+    \UNTIL{no more violated constraints}
+    \STATE{ {\bf return} parameters $\hat{\btheta}$}
+    \STATE{Set $iter = iter+1$}
+
+    \UNTIL{$iter\geq MaxIter$}
+    \STATE{ {\bf return} parameters $\hat{\btheta}$}
+  \end{algorithmic}
+  \caption{\label{alg:learning} Learning lower linear envelope
+    MRFs with latent variables.}
+\end{algorithm}
 
 \end{document}
 \endinput
