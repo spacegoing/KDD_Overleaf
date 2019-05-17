@@ -119,6 +119,8 @@
   multi-task part for this frameworks. 
   - 此处不知是指multi-task的什么没有说清楚，是不是跟上面同样的问
   题
+
+
 - review3: The HMPL contains three modules of DARNN about how the
   model works to capture informational representations, which is
   not introduced at all.
@@ -126,6 +128,7 @@
   from the raw market data, but the discussion of this part is
   very brief and lacks explanation.
   - 好像跟上面是同一问题
+  - 
 - review3: The connection between this part and the second part,
   MRFs, is also missing which makes the paper not easy to follow
   and reproduce.
