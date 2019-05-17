@@ -502,14 +502,14 @@ section~\ref{sec:opt}.
 
 In this section, we introduce the multi-task RNN-MRFs
 architecture which is constructed with two parts. The first part
-is a ``Multi-task Market Price Learner'', which consists of three
+is a Multi-task Market Price Learner, which consists of three
 dual stage attention based recurrent neural network
 (DARNN)~\cite{qin2017dual} modules. The goal of the first part is
 to tackle the first challenge, \textit{i.e.}, automatically
 extracting informative representations of the raw market price
 without considering any hand-crafted feature and technical
 indicator. The second part is an ``Intra-clique Predictor'' which
-is a binary Markov random fields model which incorporates
+is a binary Markov random fields model with
 weighted higher order energy functions. Those higher order
 functions are applied to sector lists (used as maximum cliques)
 defined by financial experts. The domain knowledge about leading
@@ -518,7 +518,7 @@ weights in energy function accordingly. The goal of this part is
 to tackle the second and third challenges. Unary features learned
 by DARNN modules are jointly employed to maintain higher order
 consistency among stocks belonging to the same sector. The
-detailed architecture are shown in Figure~\ref{fig:mrfrnn}.
+detailed architecture is shown in Figure~\ref{fig:mrfrnn}.
 
 
 \subsection{Multi-task Market Price Learner}
@@ -574,13 +574,8 @@ used as our basic module not only because of its capability of
 selecting relevant deriving series as well as temporal features,
 but also due to its superior performance for time series
 prediction compared to LSTM~\cite{hochreiter1997long} and
-attention based LSTM~\cite{attention}. Specifically, bottom level
-contains two separate DARNN modules. They are supervised by lower
-level tasks which aim to predict future price as well as
-volatility based upon the raw market price data. The key
-difference among those modules is the loss function. At top
-level, it is supervised by a high-level task that learns to use
-representations extracted by two bottom modules as well as raw
+attention based LSTM~\cite{attention}. Specifically, the bottom level
+contains two separate DARNN modules. They are supervised by low-level tasks which aim to predict future price as well as volatility based upon the raw market price data. The key difference among those modules is the loss function. At the top level, it is supervised by a high-level task that learns to use representations extracted by two low-level modules as well as raw
 market price data to predict positive / negative price movement
 of stocks. Logits of the last layer are passed to Intra-clique
 Predictor described in section~\ref{sec:srp} as unary features.
@@ -605,8 +600,8 @@ For both DARNN modules at the low level, the input matrix is a
 concatenation of exogenous matrix $\bX \in \reals^{5\times T}$
 which contains $5$ exogenous driving series: opening price, low
 price, high price, volume, amount and $1$ target series $\by =
-(y_1,y_2,\dots,y_T) \in \reals^T$. The aim of these two modules
-are to predict target series $y_{t+p}$ in the next $p$ time
+(y_1,y_2,\dots,y_T) \in \reals^T$. These two modules
+aim to predict target series $y_{t+p}$ in the next $p$ time
 steps:
 
 $$\hat{y}_{t+p} = \text{DARNN}(y_1,\dots,y_{t},x_1,\dots,x_t)$$
