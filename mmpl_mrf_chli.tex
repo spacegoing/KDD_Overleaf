@@ -574,8 +574,13 @@ used as our basic module not only because of its capability of
 selecting relevant deriving series as well as temporal features,
 but also due to its superior performance for time series
 prediction compared to LSTM~\cite{hochreiter1997long} and
-attention based LSTM~\cite{attention}. Specifically, the bottom level
-contains two separate DARNN modules. They are supervised by low-level tasks which aim to predict future price as well as volatility based upon the raw market price data. The key difference among those modules is the loss function. At the top level, it is supervised by a high-level task that learns to use representations extracted by two low-level modules as well as raw
+attention based LSTM~\cite{attention}. Specifically, the bottom
+level contains two separate DARNN modules. They are supervised by
+low-level tasks which aim to predict future price as well as
+volatility based upon the raw market price data. The key
+difference among those modules is the loss function. At the top
+level, it is supervised by a high-level task that learns to use
+representations extracted by two low-level modules as well as raw
 market price data to predict positive / negative price movement
 of stocks. Logits of the last layer are passed to Intra-clique
 Predictor described in section~\ref{sec:srp} as unary features.
