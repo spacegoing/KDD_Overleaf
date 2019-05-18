@@ -269,39 +269,41 @@ market dynamics and the stock price, but also
 due to a lack of training data. However, according to the
 efficient market
 hypothesis~\cite{malkiel1970efficient}, stock price reflects all
-available market information. Therefore, informative stock price
-changes can be employed as an approximate of market news arrival.
-In this way, the complexity of the first challenge is transformed
-to the detection of informative price changes in individual
-stocks.
-
-Economists hitherto to used patterns hidden
-inside historical trading prices and volume to predict future
-price movements~\cite{fama1966filter,jensen1967random}. As a result, hundreds
-of hand-crafted features, known as technical analysis
-indicators~\cite{kirkpatrick2010technical}, have been designed. However, most of
-these models have stopped generating profitable
+available market information.
+% chli_comment
+% Therefore, informative stock price
+% changes can be employed as an approximate of market news arrival.
+% In this way, the complexity of the first challenge is transformed
+% to the detection of informative price changes in individual
+% stocks.
+%
+Economists hitherto to used patterns hidden inside historical
+trading prices and volume to predict future price
+movements~\cite{fama1966filter,jensen1967random}. As a result,
+hundreds of hand-crafted features, known as technical analysis
+indicators~\cite{kirkpatrick2010technical}, have been designed.
+However, most of these models have stopped generating profitable
 signals since the early 1990s~\cite{park2007we}.
-Since trading strategies based on technical analysis rules
-are publicly available and easy to replicate, informed
-institutional traders have been motivated to manipulate the market price
-and encourage retail (individual) traders to follow their manipulated
-price to generate excess profit~\cite{sun2016decision}.
+% chli_comment Since trading strategies based on technical
+% analysis rules are publicly available and easy to replicate,
+% informed institutional traders have been motivated to
+% manipulate the market price and encourage retail (individual)
+% traders to follow their manipulated price to generate excess
+% profit~\cite{sun2016decision}.
 
-To overcome these problems and address the first challenge, here we
-employ an end-to-end hierarchical
+To overcome these problems and address the first challenge, here
+we employ an end-to-end hierarchical
 multi-task~\cite{caruana1993multitask} RNN to extract informative
 changes from raw market prices without using hand-crafted
-features such as technical analysis indicators. Good
-price prediction relies on rich representations and a
-multi-task framework that can leverage complementary aspects
-from diverse tasks~\cite{sogaard2016deep}. Specifically, given
-raw market price data, which only contains six features
-(opening price, low price, high price, closing price,
-volume, and amount) at each time interval, we leverage a
-hierarchical multi-task network to first extract features on different
-tasks and then concatenate those complementary feature
-vectors to make the final prediction.
+features such as technical analysis indicators. Good price
+prediction relies on rich representations and a multi-task
+framework that can leverage complementary aspects from diverse
+tasks~\cite{sogaard2016deep}. Specifically, given raw market
+price data, which only contains six features (opening price, low
+price, high price, closing price, volume, and amount) at each
+time interval, we leverage a hierarchical multi-task network to
+first extract features on different tasks and then concatenate
+those complementary feature vectors to make the final prediction.
 
 To model lead-lag relationships and address the other two
 challenges, we also present a binary Markov Random Fields (MRFs) with
@@ -437,12 +439,11 @@ algorithm with standard linear programming methods. However, they
 only show an exact inference algorithm on at most three terms.
 Following their approach, \citename{gouldlearning} extended their
 method to a weighted lower linear envelope with arbitrary many
-terms solved with an efficient algorithm. They
-showed that the energy function with auxiliary variables is submodular
-by transforming it into a quadratic pseudo-Boolean
-form~\cite{Boros:MATH02} and that
-graph-cuts like algorithms~\cite{Hammer:1965, Boykov:ICCV01,
-  Freedman:CVPR05} can be applied for exact
+terms solved with an efficient algorithm. They showed that the
+energy function with auxiliary variables is submodular by
+transforming it into a quadratic pseudo-Boolean
+form~\cite{Boros:MATH02} and that graph-cuts like
+algorithms~\cite{Boykov:ICCV01} can be applied for exact
 inference.
 
 In the third step, \citename{gouldlearning} solved
@@ -914,10 +915,9 @@ as a summation of $2K-1$ terms:
 
 \begin{align}
   \label{eq:originalenergy}
-  E^c(y_c,z)=&a_1W_c(y_c)+b_1\notag \\
-            &+\sum_{k=1}^{K-1}z_k((a_{k+1}-a_k)W_c(y_c)+b_{k+1}-b_k)\notag \\ 
-            =&a_1W_c(y_c)+\sum_{k=1}^{K-1}(a_{k+1}-a_k)z_kW_c(y_c) \notag \\
-            &+\sum_{k=1}^{K-1}(b_{k+1}-b_k)z_k
+  E^c(y_c,z)
+  =&a_1W_c(y_c)+\sum_{k=1}^{K-1}(a_{k+1}-a_k)z_kW_c(y_c) \notag \\
+   &+\sum_{k=1}^{K-1}(b_{k+1}-b_k)z_k
 \end{align}
 
 Here we use the fact of equation~\eqref{eq:shift_invariant} and
@@ -1063,10 +1063,10 @@ imputes the latent variables $\bz$ explicitly by
 equation~\eqref{eq:linenv_latent_inf}. Namely solving the
 ``latent variable completion'' problem~\cite{yu2009learning}:
 
-\begin{align}
-  \bz_i^*=\argmax_{\mathbf{z} \in \mathcal{Z}} \theta \cdot
-  \psi(\mathbf{y}_i,\mathbf{z})
-\end{align}
+% \begin{align}
+%   \bz_i^*=\argmax_{\mathbf{z} \in \mathcal{Z}} \theta \cdot
+%   \psi(\mathbf{y}_i,\mathbf{z})
+% \end{align}
 
 The inference result $z_i^*$ for $i=1,\dots,n$ is used as
 completely observed for later stage. With the latent variable
@@ -1086,8 +1086,8 @@ standard structural SVM problem:
 \end{align}
 
 Our optimization algorithm is summarized in
-\algref{alg:learning}. As we mentioned in \appref{sec:train_detail}, 
-although we proposed an end-to-end
+\algref{alg:learning}. As we mentioned in
+\appref{sec:train_detail}, although we proposed an end-to-end
 subgradient algorithm is section \ref{sec:mmpl}, MRFs updated by
 such algorithm take too many iterations to converge. Therefore,
 we propose a two-stage training procedure. At first stage, MMPL
@@ -1401,8 +1401,6 @@ Our work provides a number of directions for future research. In this work we pr
 
 %%
 %% If your work has an appendix, this is the place to put it.
-\newpage
-
 \appendix
 
 \section{Training Details}
@@ -1491,30 +1489,7 @@ at the second stage.
 \subsection{End-to-end NN-MRFs training}
 \label{sec:mrf_train}
 
-With converged MMPL and MRFs at hand, now we can go forward to train
-them in an end-to-end manner. We only include pairwise energy function through
-section~\ref{sec:srp} and section~\ref{sec:opt} to show a general
-application of our proposed algorithm. In the case of Chinese
-stock market, to our best knowledge there is no public available
-definition of pairwise relationship between stocks. Therefore, in
-our implementation we only use unary and higher order energy
-function. Each stock is then treated as a node in MRFs and each
-stocks group which has lead-lag relationships is treated as a
-maximum clique in MRFs. One benefit of MRFs clique is that we can
-embed domain expert knowledge about industry classification as
-maximum cliques into our model. We choose to use Tonghuashun
-industry classification \cite{ths} in our model. One subtle but
-crucial detail about modeling lead-lag effect lies in
-equation~(\ref{eqn:potential2}). Recall that $W_{\!c}(\by_c) =
-\sum_{i \in c} w_i y_i$ with $w^c_i \geq 0$ and $\sum_{i \in c}
-w^c_i = 1$ which are weights for stocks in each clique.
-Therefore, leading stocks should have a higher weights while
-lagging stocks should have lower weights. In our implementation,
-we use constituents' weight defined in CSI200, CSI500 and CSI300
-as their weights in equation~(\ref{eqn:potential2}) and normalize
-them to ensure the summation equals $1$.
-
-\begin{algorithm}
+\begin{algorithm}[h]
   \begin{algorithmic}[1]
     \STATE{Set $MaxIter = 100$}
     \STATE{ {\bf input} training set $\{\by_i\}_{i=1}^{n}$, regularization constant $C > 0$,
@@ -1555,6 +1530,30 @@ them to ensure the summation equals $1$.
   \caption{\label{alg:learning} Learning lower linear envelope
     MRFs with latent variables.}
 \end{algorithm}
+
+With converged MMPL and MRFs at hand, now we can go forward to
+train them in an end-to-end manner. We only include pairwise
+energy function through section~\ref{sec:srp} and
+section~\ref{sec:opt} to show a general application of our
+proposed algorithm. In the case of Chinese stock market, to our
+best knowledge there is no public available definition of
+pairwise relationship between stocks. Therefore, in our
+implementation we only use unary and higher order energy
+function. Each stock is then treated as a node in MRFs and each
+stocks group which has lead-lag relationships is treated as a
+maximum clique in MRFs. One benefit of MRFs clique is that we can
+embed domain expert knowledge about industry classification as
+maximum cliques into our model. We choose to use Tonghuashun
+industry classification \cite{ths} in our model. One subtle but
+crucial detail about modeling lead-lag effect lies in
+equation~(\ref{eqn:potential2}). Recall that $W_{\!c}(\by_c) =
+\sum_{i \in c} w_i y_i$ with $w^c_i \geq 0$ and $\sum_{i \in c}
+w^c_i = 1$ which are weights for stocks in each clique.
+Therefore, leading stocks should have a higher weights while
+lagging stocks should have lower weights. In our implementation,
+we use constituents' weight defined in CSI200, CSI500 and CSI300
+as their weights in equation~(\ref{eqn:potential2}) and normalize
+them to ensure the summation equals $1$.
 
 \end{document}
 \endinput
