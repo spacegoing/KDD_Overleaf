@@ -601,9 +601,8 @@ series of $T$ time-steps and $\bx_t=(x_t^1,x_t^2 ,\dots
 ,x_t^N)\in \reals^N$ to denote a snapshot at time-step $t$ of all
 $N$ features.
 
-For both DARNN modules at the low level, the input matrix is a
-concatenation of exogenous matrix $\bX \in \reals^{5\times T}$
-which contains $5$ exogenous driving series: opening price, low
+For both DARNN modules at the low level, the input is $\bX \in \reals^{5\times T}$
+which contains $5$ exogenous driving series, \textit{i.e.}, opening price, low
 price, high price, volume, amount and $1$ target series $\by =
 (y_1,y_2,\dots,y_T) \in \reals^T$. These two modules
 aim to predict target series $y_{t+p}$ in the next $p$ time
@@ -612,7 +611,7 @@ steps:
 $$\hat{y}_{t+p} = \text{DARNN}(y_1,\dots,y_{t},x_1,\dots,x_t)$$
 
 The target series $\by_{\text{trend}}$ of
-$\text{DARNN}_{\text{trend}}$ is closing price. The target series
+$\text{DARNN}_{\text{trend}}$ is the closing price. The target series
 $\by_{\text{volat}}$ of $\text{DARNN}_{\text{volat}}$ is the
 standard deviation of closing price over $M$ constant time-steps.
 In our implementation we set $M=10$. We use Mean Squared Error
@@ -627,17 +626,17 @@ sign(y_{t+p}-y_t)$ where $y_t$ denotes closing price at time-step
 $t$. We use cross-entropy as loss function to train the final
 $\text{DARNN}_{\text{multi}}$. Logits (outputs before going
 through \emph{softmax}) of $\text{DARNN}_{\text{multi}}$ are then
-passed to ``Intra-clique Predictor'' as unary features.
+passed to Intra-clique Predictor as unary features.
 
 In order to train MMPL together with MRFs in an end-to-end
 manner, we follow the subgradient method proposed by
 \citename{witoonchart2017application}. Since our inner loop
 proposed in section~\ref{sec:mrflssvm_learning_algo} is actually
-a Structural SVM. Only gradients of parameters and feature
-functions need to be re-calculated. In our framework, outputs of
-MMPL are only used as unary features in MRFs' energy functions,
-our back-propagation rules can be defined by taking derivative of
-equation~(\ref{eq:energyfunction_UPH}):
+a latent structural SVM. Only gradients of parameters and feature
+functions need to be updated. In our framework, outputs of
+MMPL (Logits of $\text{DARNN}_{\text{multi}}$) are only used as unary features in MRFs' energy functions,
+our back-propagation rules can be defined by taking derivative of the objective function defined in
+~\eqref{eq:mrflssvm_object}:
 
 \begin{align}
   \label{eq:der_w}
@@ -645,18 +644,11 @@ equation~(\ref{eq:energyfunction_UPH}):
 \end{align}
 
 \noindent where $y$ is the ground-truth label and $y^*$ is
-inferenced label. $\psi^U$ is unary feature function described in
-section~\ref{sec:llep}, here it contains logits calculated from
-$\text{DARNN}_{\text{multi}}$. $\bw$ is parameter vector of
-$\text{DARNN}_{\text{multi}}$. And gradients of parameters can be
-calculated by
-
-\begin{align}
-  \label{eq:der_phi}
-  \frac{\partial L}{\partial \psi^U} = \bw^U
-\end{align}
-
-Equations \eqref{eq:der_w} and \eqref{eq:der_phi} can be directly plugged
+inferenced label. $\psi^U$ is unary feature
+function described in section~\ref{sec:llep}, here it denotes
+logits calculated from $\text{DARNN}_{\text{multi}}$. $\bw^U$ is
+unary parameter defined in energy function~\eqref{eq:energyfunction_UPH}.
+Equations \eqref{eq:der_w} can be directly plugged
 into sub-gradient algorithm proposed in \cite{witoonchart2017application}.
 Other configurations stay the same with their algorithm.
 
@@ -670,8 +662,7 @@ present a binary Markov Random Fields (MRFs) with weighted lower
 linear envelopes as higher order (when the clique contains more
 than two nodes) energy functions. Note that the algorithm
 proposed here is a general framework for classification tasks.
-Besides time series classification, it can also be applied to
-computer vision tasks.
+Besides time series classification, it can also be applied to other tasks such as computer vision.
 
 % In section~\ref{sec:opt} we will discuss learning the
 % parameters under the latent structural SVM framework and also
@@ -704,7 +695,7 @@ function which is known as \emph{lower linear envelope
 Fields area for encouraging consistency over large
 cliques~\cite{Kohli:CVPR07,Nowozin:2011,Gould:ICML2011}.
 
-Let $\cal C$ denotes the set of all maximal cliques in an image
+Let $\cal C$ denotes the set of all maximal cliques
 and $\by_c=\{y_i |\text{\,for\,} i \in C_j\}$ denotes set of
 binary random variables where $y_i\in \{0,1\}$ in clique $C_j$, a
 weighted lower linear envelope potential over $\by_c$ is defined
@@ -1111,12 +1102,11 @@ empirical initialization algorithm in \appref{sec:sup_init}.
 \section{Experiment}
 \label{sec:exp}
 
-In this section, we first introduce 3 stock datasets (index) and
-how we use them to construct our final input datasets. Then, we
-introduce the parameter settings of our model and other training
+In this section, we first introduce 3 stock datasets. Then, we
+introduce the parameter settings for our model and training
 details. Finally, we select four evaluation metrics and use them
-to demonstrate our framework's effectiveness by comparing with
-several baseline methods.
+to demonstrate the effectiveness of our proposed model by comparing to
+several baseline approaches.
 
 \subsection{Dataset and Model Settings}
 \label{sec:dataset}
@@ -1168,10 +1158,9 @@ samples. More labeling details are described in appendix
   \label{tab:ta}
 \end{table}
 \vspace{-2mm}
-To demonstrate benefits of multi-task RNN over manually designed
-technical indicators, we also need to construct technical
-indicators datasets for each of those market price dataset
-collected above. We select 8 most popular indicators, 2 from each
+To demonstrate the benefits of multi-task RNN over manually designed
+technical indicators, we construct technical
+indicators datasets. We select 8 most popular indicators, 2 from each
 category~\cite{kirkpatrick2010technical} shown in Table
 \ref{tab:ta}. In implementation, we use open source package
 \emph{Technical Analysis Library in
@@ -1192,9 +1181,9 @@ section~\ref{sec:mmpl}, closing price at time $t$ can be directly
 used as regression target for $\text{DARNN}_{\text{trend}}$.
 Standard deviation of closing price with a window size of $10$ is
 used as regression target for $\text{DARNN}_{\text{volat}}$. The
-dimensions of hidden state and cell state are 32 for
+dimensions of hidden state and cell state are fixed as 32 for
 $\text{DARNN}_{\text{trend}}$ as well as
-$\text{DARNN}_{\text{volat}}$ and 128 for
+$\text{DARNN}_{\text{volat}}$, and 128 for
 $\text{DARNN}_{\text{multi}}$. More training details are
 described in appendix \ref{sec:train_detail}.
 
@@ -1254,21 +1243,21 @@ section~\ref{sec:multi_train}. As we can see in
 Table~\ref{tab:result}, single task models (LSTM, LSTM
 Encoder\_Decoder, DARNN) tested on \textbf{Market} dataset
 (without technical analysis indicators as inputs) generally have
-worse performance on all 4 metrics. In particular, performance of
+worse performance with all 4 metrics. In particular, performance of
 DARNN models tested on \textbf{Indicator} dataset is consistently
 better than the ones on \textbf{Market} dataset. This proves that
 even with hand-crafted features, deep learning models can still
 benefit from diversified and complementary features.
 
-To test the effectiveness of multi-task framework, we conduct ablation study with only one low level task ($\text{DARNN}_\text{trend}$ or $\text{DARNN}_\text{volat}$) 
-together with the high level task module $\text{DARNN}_\text{multi}$. Results
+To test the effectiveness of multi-task framework, we conduct ablation study with only one low-level task (\quad $\text{DARNN}_\text{trend}$ \quad or \\ $\text{DARNN}_\text{volat}$) 
+together with the high-level task module $\text{DARNN}_\text{multi}$. Results
 indicate that these two variants have comparable or slightly worse result than
  DARNN on \textbf{Market}. This may because single task model does not provide diversified features while have more parameters than DARNN. Finally, MMPL outperforms all single task models and baseline methods on \textbf{Market}. This
 suggests that diversified and complementary tasks can help MMPL extract effective features. Specifically,
 by comparing MMPL and DARNN on \textbf{Market} as well as \textbf{Indicator},
 we can see that MMPL generally outperforms DARNN on CSI200 and
-CSI300 indexes and is slightly worse on CSI500 index. We can conclude that by using multi-task
-RNN, we can extract better or at least comparable features compared with
+CSI300 indexes and is slightly worse than DARNN on \textbf{Indicator} of CSI500 index. We can conclude that by using multi-task
+RNNs, we can extract better or at least comparable features compared with
 hand-crafted features.
 \subsubsection{Effectiveness of higher-order MRFs}
 In Table~\ref{tab:result}, we can observe that MMPL-MRFs framework consistently outperforms other baselines on all 3 CSI index constituent stocks. It shows evidence that higher-order energy function can help with
@@ -1485,7 +1474,7 @@ function, after the \emph{softmax} layer is removed, we add an
 additional linear mapping layer between logits of MMPL and MRFs
 at the second stage.
 
-\subsection{End-to-end NN-MRFs training}
+\subsection{End-to-end multi-task RNN-MRFs training}
 \label{sec:mrf_train}
 
 \begin{algorithm}[h]
