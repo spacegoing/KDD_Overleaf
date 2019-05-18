@@ -635,7 +635,7 @@ proposed in section~\ref{sec:mrflssvm_learning_algo} is actually
 a latent structural SVM. Only gradients of parameters and feature
 functions need to be updated. In our framework, outputs of
 MMPL (Logits of $\text{DARNN}_{\text{multi}}$) are only used as unary features in MRFs' energy functions,
-our back-propagation rules can be defined by taking derivative of the objective function defined in
+our back-propagation rules can be defined by taking derivative of the objective function \textit{w.r.t} $\bw^U$  defined in
 ~\eqref{eq:mrflssvm_object}:
 
 \begin{align}
@@ -693,7 +693,13 @@ potentials $\psi^H$ defined as a concave piecewise linear
 function which is known as \emph{lower linear envelope
   potentials}. This has been studied extensively in Markov Random
 Fields area for encouraging consistency over large
-cliques~\cite{Kohli:CVPR07,Nowozin:2011,Gould:ICML2011}.
+cliques~\cite{Kohli:CVPR07,Nowozin:2011,Gould:ICML2011}. Pairwise energy function is included only to show our framework
+applies to general cases. To our best knowledge there is
+no public available definition of pairwise relationship between
+stocks. In our implementation, we use logits from MMPL as unary
+function and weighted lower linear envelopes as higher order
+function to encode lead-lag relationships. Pairwise features are
+excluded.
 
 Let $\cal C$ denotes the set of all maximal cliques
 and $\by_c=\{y_i |\text{\,for\,} i \in C_j\}$ denotes set of
@@ -1207,7 +1213,7 @@ predicted labels of constituent stocks in each CSI index.
 \centering
 \small
 \setlength\tabcolsep{2pt}
-\caption{Results: Baselines and ablation study. All models have a
+\caption{Results: baselines and ablation studies. All models have a
   window size (lag steps) of 20 and predict price movement label
   at the next time step.}
 \begin{tabular}{@{}cccccccccccccc@{}}
@@ -1262,11 +1268,11 @@ hand-crafted features.
 \subsubsection{Effectiveness of higher-order MRFs}
 In Table~\ref{tab:result}, we can observe that MMPL-MRFs framework consistently outperforms other baselines on all 3 CSI index constituent stocks. It shows evidence that higher-order energy function can help with
 encoding clique level consistency thus improving overall
-prediction performance. One interesting point to note is that the recall rate of MMPL-MRFs is constantly lower than other baselines. This can be seen as a trade off between accuracy and recall rate. However, it is worth to mention that for stock price movement prediction, high accuracy and precision are much preferred than recall rate. Another interesting phenomenon is that MMPL-MRFs gives higher improvements on CSI200 and CSI300 while little improvements over DARNN trained with technical
+prediction performance. One interesting point to note is that the recall rate of MMPL-MRFs is constantly lower than other baselines. This can be seen as a trade off between accuracy and recall rate. However, it is worth to mention that for stock price movement prediction, high accuracy and precision are much preferred than recall rate. Another interesting phenomenon is that MMPL-MRFs gives more improvement on CSI200 and CSI300 while less improvement over DARNN trained with technical
 analysis indicators on CSI500. One possible reason is that CSI200 and CSI300 select most liquid and representative stocks in Chinese stock market. Those stocks exhibit much stronger and higher order consistency than illiquid stocks. CSI500 selects small-mid
 capital stocks which are less liquid and contains much more noisy movements.
 
-During training time, our algorithm converges in from 4 to 19
+In the training stage, our algorithm converges in 4 to 19
 CCCP outer loops. The average inference time of graph-cut
 algorithm is 34 seconds.
 
@@ -1290,12 +1296,12 @@ higher-order relationship in figure~\ref{fig:consistency}.
 \\                                                                        {\small (a) Ground-truth} & {\small (b) MMPL } & {\small (c) MMPL-MRFs} 
   \end{tabular}\vspace{-2mm}
   \caption{\label{fig:consistency} Higher order consistency
-    visualization. Figure (a) is calculated
+    visualization. (a) is calculated
     directly from ground truth labels on test set.
-    Figure (b)
+    (b)
     is calculated using predicted labels of MMPL without MRFs on the
     test set.
-    In figure (c), we use predicted labels of
+    (c), we use predicted labels of
     MMPL-MRFs on test set as inputs.}\vspace{0mm}
 \end{figure*}
 
@@ -1321,9 +1327,9 @@ $N=\lceil\frac{T}{P}\rceil$ non-overlapping intervals
 $\{y_i^n,y_i^{n+1},...,y_i^{n+P}\}$ with fixed length $P$. For
 any two stocks $i$ and $j$, we calculate the difference
 $d_{ij}^n=\sum_n^{n+P}{y_i^n}-\sum_n^{n+P}{y_j^n}$ of how many
-times positive price movement happen in the $n$th time interval
+times positive price movement happen in the $n$-th time interval
 in each stock. Then the consistency level $c_{ij}$ between stocks
-$i$ and $j$ can be calculated as a $\ell_1\text{norm}$:
+$i$ and $j$ can be calculated via a $\ell_1\text{norm}$:
 $$c_{ij}=-\|\mathbf{d}_{ij}\|_1$$
 \noindent where
 $\mathbf{d}_{ij}=\{d_{ij}^1,d_{ij}^2,...,d_{ij}^N\}$. We
@@ -1336,10 +1342,10 @@ arrival-conduction-integration-release process is 4.04 minutes~\cite{fangyan2012
 Since which stock is leading at each time interval is elusive, we
 set $P=9$ when calculating consistency measures.
 
-As we can see in figure (a), there is a significant red square
+As we can see in Figure 4(a), there is a significant red square
 area, which means ground-truth heat-map shows strong intra-clique
 consistency. This is an evidence that higher-order relationships
-do exist within clique of stocks. However, in figure (b), the red
+do exist within clique of stocks. However, in Figure 4(b), the red
 square area is fragmented into many little pieces. The whole
 area's color is closer to blue when compared to ground-truth
 heat-map, which means that MMPL captures little higher-order consistency.
@@ -1347,12 +1353,12 @@ The reason we still can observe a shape of red square
 is that the accuracy of MMPL model on CSI300 is $66.6\%$.
 However, we can still conclude that the accuracy of single MMPL
 model mainly comes from unary features and it fails to capture
-higher order consistency relationships lies in clique of stocks.
+higher order consistency of different stocks belonging to the same clique.
 On the contrary, even though MMPL-MRFs model's accuracy on CSI300
 index is only $2.35\%$ better than MMPL model, we can observe
-that heat-map (c) is more close to ground-truth heat-map than
-heat-map (b). There is a much clear red square and the number of
-small fragments in red area is also less than figure (b). We can
+that heat-map Figure 4(c) is more close to ground-truth heat-map than
+heat-map Figure 4(b). There is a much clear red square and the number of
+small fragments in red area is also less than Figure 4(b). We can
 conclude that MMPL-MRFs models learn to utilize both unary
 features from MMPL as well as higher-order relationships encoded
 in MRFs.
@@ -1362,7 +1368,7 @@ in MRFs.
 
 Here we show how to model individual stock price predictions without hand-crafted features and encode lead-lag relationships between stocks using weighted higher-order MRFs. A multi-task neural network framework - Multi-task Market Price Learner (MMPL) - is proposed to automatically extract diversified and complementary features from individual stock price sequences. Features learned by MMPL are passed to a binary MRF with a weighted lower linear envelope energy function to utilize intra-clique higher-order consistency between stocks. An efficient latent structural SVM algorithm is designed to learn MRFs in polynomial time. Finally, the MRFs and MMPL are trained end-to-end using the sub-gradient algorithm. Extensive experiments are conducted on three major Chinese stock market indexes, and the proposed MMPL-MRFs achieve the best accuracy on all three indexes.
 
-Our work provides a number of directions for future research. In this work we proposed a multi-task neural network for stock price prediction. While we directly use DARNN as a proof of concept, other, more dedicated architectures are worthy of exploration. Another obvious extension is to apply our method to multi-label MRFs to help with three-class price movement prediction. As well as time series tasks, we can also investigate how the latent SSVM framework performs on computer vision tasks. Another interesting direction is to investigate the implicit relationship between the expert-defined index list and graph RNN~\cite{you2018graphrnn}, which could further help to reduce the domain knowledge required by our framework.
+Our work provides a number of directions for future research. In this work we proposed a multi-task recurrent neural network for stock price prediction. While we directly use DARNN as a proof of concept, other, more dedicated architectures are worthy of exploration. As well as time series tasks, we can also investigate how the latent SSVM framework performs on computer vision tasks. Another interesting direction is to investigate the implicit relationship between the expert-defined index list and graph RNN~\cite{you2018graphrnn}, which could further help to reduce the domain knowledge required by our framework.
 
 %%
 %% The acknowledgments section is defined using the "acks" environment
@@ -1370,15 +1376,8 @@ Our work provides a number of directions for future research. In this work we pr
 %% identification of the section in the article metadata, and the
 %% consistent spelling of the heading.
 \begin{acks}
-  We would like to thank Stephen Gould very much for explaining
-  higer-order MRFs. We would also like to thank Peerajak
-  Witoonchart for his explanation of sub-gradient SSVMs
-  algorithm.
-
-  We acknowledge data provision and MQD research infrastructure
-  support from CMCRC. Li is grateful for funding from the CMCRC.
-  This work is also funded by China Hebei Provincial Department
-  of Human Resources. Project ID: CL201723.
+  Li would like to thank Stephen Gould very much for explaining higer-order MRFs and thank Peerajak
+  Witoonchart for the explanation of sub-gradient SSVMs algorithm. Li acknowledges data provision, MQD research infrastructure support and funding support from CMCRC. This work is also funded by China Hebei Provincial Department of Human Resources. Project ID: CL201723.
 \end{acks}
 
 %%
