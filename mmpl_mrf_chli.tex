@@ -669,7 +669,7 @@ Besides time series classification, it can also be applied to other tasks such a
 % how to back-prop gradients to neural networks.
 
 
-\subsubsection{Higer Order Energy: The Weighted Lower Linear
+\subsubsection{Higher Order Energy: The Weighted Lower Linear
   Envelope Function}
 \label{sec:llep}
 
@@ -726,7 +726,7 @@ four linear functions in \figref{fig:concave}.
     Assume the second linear function is active namely
     $\bz^c=(1,1,0,0)$ (equation \ref{eqn:binary_concave_z}). The result of linear combination of
     parameter vector and feature vector is same as quadratic
-    psuedo-Boolean function.}
+    pseudo-Boolean function.}
 \end{figure}
 
 % % to_replace
@@ -769,7 +769,7 @@ satisfied:
 Another important property of equation~\eqref{eq:min_energy} is
 shift invariant (vertically). We write
 $\widetilde{\psi}^{H}_c\!(\by_c)$ by shift
-equation~\eqref{eqn:potential2} vertically with an abitrary
+equation~\eqref{eqn:potential2} vertically with an arbitrary
 amount $b^{const}\in R$
 $$\widetilde{\psi}^{H}_c\!(\by_c) = \min_{k=1, \ldots, K}
 \left\{a_k W_{\!c}(\by_c) + b_k + b^\textrm{const} \right\}$$
@@ -783,10 +783,10 @@ Then we have
 %
 Therefore, in the following discussion without loss of generality
 we assume $b_1 = 0$ thus $b_k\geq0 \text{\; for \;} k=1,\dots,n$.
-%
+
+
 \subsubsection{Exact Inference}
 \label{sec:exact_inference}
-
 Exact inference on MRFs has been extensively studied in past
 years. Researchers found that, energy functions which can be
 transformed into quadratic pseudo-Boolean
@@ -799,12 +799,12 @@ results to perform exact inference on lower linear envelope
 potentials. In this section we mainly focus on describing the
 \emph{st min cut} graph constructed by
 Gould~\cite{Gould:ICML2011,gouldlearning} for exact
-inference~\eqref{eq:min_energy} of energy function containing
+inference of energy function (equation ~\eqref{eq:min_energy}) containing
 lower linear envelope potentials.
 
 Following the approach of \citename{Kohli:CVPR10},
 \citename{Gould:ICML2011,gouldlearning} transformed the weighted
-lower linear envelope potential~\eqref{eqn:potential2} into a
+lower linear envelope potential in equation~\eqref{eqn:potential2} into a
 quadratic pseudo-Boolean function by introducing $K-1$ auxiliary
 variables $\bz = \left(z_1, \ldots, z_{K-1}\right)$ with $z_k\in
 \{0,1\}$:
@@ -826,23 +826,7 @@ vector (equation~\eqref{eq:llsvm_param} and ~\eqref{eq:llsvm_feature})
 which are used in latent
 structural SVM.
 
-\begin{figure}[t]
-  \centering
-  \setlength{\tabcolsep}{2pt}
-  \begin{tabular}{cc}
-    \includegraphics[width=0.54\columnwidth]{Methodology/figures/ho.png}&
-                                                                         \includegraphics[width=0.4\columnwidth]{Methodology/figures/up.png}\\
-                                                                         {\small (a)} & {\small (b)} 
-  \end{tabular}
-  \caption{\label{fig:stmincut} $st$-graph construction for
-    equation~\eqref{eqn:posiform}, unary and pairwise terms.
-    Every cut corresponds to an assignment to the random
-    variables, where variables associated with nodes in the
-    ${\cal S}$ set take the value one, and those associated with
-    nodes in the $\T$ set take the value zero. With slight abuse
-    of notation, we use the variables to denote nodes in our
-    graph.}
-\end{figure}
+
 
 
 
@@ -883,6 +867,25 @@ unary and pairwise) is explained in \figref{fig:stmincut}.
 % values in input unary terms accordingly. For pairwise edges (2
 % edges in the middle), both edges share the same weight which
 % equals to the input pairwise term.
+
+
+\begin{figure}[t]
+  \centering
+  \setlength{\tabcolsep}{2pt}
+  \begin{tabular}{cc}
+    \includegraphics[width=0.54\columnwidth]{Methodology/figures/ho.png}&
+                                                                         \includegraphics[width=0.4\columnwidth]{Methodology/figures/up.png}\\
+                                                                         {\small (a)} & {\small (b)} 
+  \end{tabular}
+  \caption{\label{fig:stmincut} $st$-graph construction for
+    equation~\eqref{eqn:posiform}, unary and pairwise terms.
+    Every cut corresponds to an assignment to the random
+    variables, where variables associated with nodes in the
+    ${\cal S}$ set take the value one, and those associated with
+    nodes in the $\T$ set take the value zero. With slight abuse
+    of notation, we use the variables to denote nodes in our
+    graph.}
+\end{figure}
 
 \section{Optimization}
 \label{sec:opt}
@@ -1389,6 +1392,8 @@ Our work provides a number of directions for future research. In this work we pr
 %%
 %% If your work has an appendix, this is the place to put it.
 \appendix
+
+\newpage
 
 \section{Training Details}
 \label{sec:train_detail}
