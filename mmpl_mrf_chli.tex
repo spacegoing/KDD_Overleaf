@@ -796,8 +796,7 @@ algorithms~\cite{Freedman:CVPR05,Hammer:1965} when they satisfy
 submodularity condition~\cite{Boros:MATH02}.
 \citename{Kohli:TR08} and \citename{Gould:ICML2011} adapted those
 results to perform exact inference on lower linear envelope
-potentials. In this section we mainly focus on describing the
-\emph{st min cut} graph constructed by
+potentials. In this section we mainly focus on describing the minimum \emph{$st$-$cut$} graph constructed by
 Gould~\cite{Gould:ICML2011,gouldlearning} for exact
 inference of energy function (equation ~\eqref{eq:min_energy}) containing
 lower linear envelope potentials.
@@ -824,13 +823,12 @@ satisfies the constraint: $z_{k+1} \leq z_k$. This property give rise to further
 parameter vector and feature
 vector (equation~\eqref{eq:llsvm_param} and ~\eqref{eq:llsvm_feature})
 which are used in latent
-structural SVM.
+structural SVM. By introducing latent variables within the energy function, we
+can learn richer energy representations than previous
+study~\cite{gouldlearning} and solve inference problem exactly
+within polynomial number of iterations.
 
-
-
-
-
-In order to construct the \emph{st-min-cut} graph, we rewrote
+In order to construct the minimum \emph{$st$-$cut$} graph, we rewrite
 equation~\eqref{eqn:binary_concave_z} into
 \emph{posiform}~\cite{Boros:MATH02}:
 
@@ -906,8 +904,8 @@ weights while our higher-order potential is represented as the
 minimum over a set of linear functions. However,
 in~\ref{sec:exact_inference} we reformulated the piesewise linear
 functions into a quadratic pseudo-Boolean
-function~\eqref{eqn:binary_concave_z} by introducing auxiliary
-variables. Now we show function~\eqref{eqn:binary_concave_z}
+function in equation~\eqref{eqn:binary_concave_z} by introducing auxiliary
+variables. Now we show equation~\eqref{eqn:binary_concave_z}
 itself is an inner product of parameter vector and feature vector
 with latent information. Note that the function can be expanded
 as a summation of $2K-1$ terms:
@@ -924,14 +922,14 @@ let $b_1=0$. Now we can reparameterize the energy function
 as
 \begin{align}
   \label{eq:llsvm_innerprod_energy}
-  E^c(\by_c,\bz; \btheta) = \btheta^T \! \psi(\by_c,\bz)
+  E^c(\by_c,\bz; \btheta^H) = \btheta^{H^T} \! \psi^H(\by_c,\bz)
 \end{align}
 
 \noindent where:
 
 \begin{equation}
 \label{eq:llsvm_param}
-  \theta_k = \left\{
+  \theta_k^H = \left\{
     \begin{aligned}
       & a_1	& \text{for} \ k=1\\
       & a_k-a_{k-1} & \text{for}\ 1< k \leq K\\
@@ -942,7 +940,7 @@ as
 
 \begin{equation}
 \label{eq:llsvm_feature}
-  \psi_k = \left\{
+  \psi_k^H = \left\{
 		\begin{aligned}
       & W_c(\by_c) 	& \text{for} \ k=1\\
       & W_c(\by_c)\bz_k & \text{for}\ 1<k\le K\\
@@ -951,30 +949,27 @@ as
   \right.
 \end{equation}
 
-Under this formulation, inference problems in
-\cite{yu2009learning} can be written as:
+Under this formulation, similar to \cite{yu2009learning}, the inference problem
+can be given by:
 
 \begin{align}
   \label{eq:linenv_full_inf}
-  (\mathbf{\hat{y}}_k(\btheta),\mathbf{\hat{z}}_k(\theta))=\argmin_{(\mathbf{y}
+  (\mathbf{y}^*_k(\btheta^H),\mathbf{z}^*_k(\theta^H))=\argmin_{(\mathbf{y}
   \times \mathbf{z}) \in \mathcal{Y} \times \mathcal{Z}}
-  \btheta^T\cdot\psi(\mathbf{y}_k,\mathbf{z}_k)
+  \btheta^{H^T}\cdot\psi^H(\mathbf{y}_k,\mathbf{z}_k)
 \end{align}
 and
 \begin{align}
   \label{eq:linenv_latent_inf}
   \mathbf{z}^*_k(\btheta) = \argmin_{\mathbf{z} \in \mathcal{Z}}
-  \btheta^T \cdot \psi(\mathbf{y}_k,\mathbf{z}_k)
+  \btheta^{H^T} \cdot \psi^H(\mathbf{y}_k,\mathbf{z}_k)
 \end{align}
 
-There are 2 facts worth to mention. The first fact is
-that in our previous construction of minimum-$st$-cut graph the
+There are two facts worth to mention. The first fact is
+that in our previous construction of minimum $st-cut$ graph the
 latent variable $\bz$ is already included. Therefore, we can
-apply our inference algorithm directly on our 2 new formulations.
-
-More interesting for equation~\eqref{eq:linenv_latent_inf} there exists
-more efficient algorithm. At training stage the ground-truth
-labels $y_i$ is a function input thus completely observed.
+apply our inference algorithm directly on our 2 new formulations. The second fact is that for equation~\eqref{eq:linenv_latent_inf}, there exists a more efficient algorithm. At training stage, the ground-truth
+labels $y_i$ is an input and is completely observed.
 Therefore, the term $((a_{k+1}-a_k)W_c(\by_c)+b_{k+1}-b_k)$ in
 equation~\eqref{eq:originalenergy} becomes constant. So we can
 infer latent variable $\bz$ explicitly by:
@@ -1015,7 +1010,7 @@ those constraints.
 
 With the inner product formulation
 (equation~\eqref{eq:llsvm_innerprod_energy}) of higher order
-energy function in hand, we now able to develop our latent
+energy function, we are able to derive our latent
 structural SVM learning algorithm. The energy function (higher
 order function together with unary and pairwise functions) can be
 written as:
@@ -1031,7 +1026,7 @@ written as:
     \psi^{pairwise}
   \end{bmatrix}=\theta_{all}^T\cdot\psi_{all}
 \end{equation}
-where $\btheta^H\in \reals$ is the parameter vector in higher
+where $\btheta^H\in \reals^{2K-1}$ is the parameter vector in higher
 order equation~\eqref{eq:llsvm_innerprod_energy} of size $2K-1$.
 $\theta^{unary}$ and $\theta^{pairwise}$ are both scalars.
 $\psi^\textrm{unary} = \sum_i \psi^U_i\!(y_i)$ and
@@ -1084,8 +1079,8 @@ standard structural SVM problem:
   \psi(\mathbf{y}_i,\mathbf{z}_i^*)\big) \nonumber
 \end{align}
 
-Our optimization algorithm is summarized in
-\algref{alg:learning}. As we mentioned in
+The detail of the optimization algorithm is summarized in
+\algref{alg:learning} of Appendix. As we mentioned in
 \appref{sec:train_detail}, although we proposed an end-to-end
 subgradient algorithm is section \ref{sec:mmpl}, MRFs updated by
 such algorithm take too many iterations to converge. Therefore,
@@ -1305,7 +1300,7 @@ higher-order relationship in figure~\ref{fig:consistency}.
     is calculated using predicted labels of MMPL without MRFs on the
     test set.
     (c), we use predicted labels of
-    MMPL-MRFs on test set as inputs.}\vspace{0mm}
+    MMPL-MRFs on test set as inputs.}\vspace{-3mm}
 \end{figure*}
 
 We first select two sectors: nonferrous metal sector, which
@@ -1378,6 +1373,7 @@ Our work provides a number of directions for future research. In this work we pr
 %% (and NOT an unnumbered section). This ensures the proper
 %% identification of the section in the article metadata, and the
 %% consistent spelling of the heading.
+
 \begin{acks}
   Li would like to thank Stephen Gould very much for explaining higer-order MRFs and thank Peerajak
   Witoonchart for the explanation of sub-gradient SSVMs algorithm. Li acknowledges data provision, MQD research infrastructure support and funding support from CMCRC. This work is also funded by China Hebei Provincial Department of Human Resources. Project ID: CL201723.
