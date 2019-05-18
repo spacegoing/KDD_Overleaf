@@ -423,7 +423,7 @@ potentials defined as a concave piecewise linear function which
 is known as lower linear envelope potentials over a clique
 of binary variables. It has been raising much interest due to its
 capability of encoding consistent constraints over large subsets
-of pixels in an image~\cite{Kohli:CVPR07,Nowozin:2011}. We follow
+of pixels in an image~\cite{Kohli:CVPR07,Nowozin:2011, Song2015}. We follow
 \citename{gouldlearning} to construct a graph-cut algorithm to
 solve an exact inference problem and propose our novel learning
 algorithms under latent structural SVM in
@@ -503,7 +503,7 @@ section~\ref{sec:opt}.
 
 In this section, we introduce the multi-task RNN-MRFs
 architecture which is constructed with two parts. The first part
-is a Multi-task Market Price Learner, which consists of three
+is a ``Multi-task Market Price Learner", which consists of three
 dual stage attention based recurrent neural network
 (DARNN)~\cite{qin2017dual} modules. The goal of the first part is
 to tackle the first challenge, \textit{i.e.}, automatically
@@ -540,7 +540,7 @@ detailed architecture is shown in Figure~\ref{fig:mrfrnn}.
 Stock price movement can be interpreted from many aspects such as
 investors sentiment, temporal patterns and cycles, flow of funds
 and market strength, \textit{etc}. Ideal features should
-represent those aspects as much as possible. Multi-task learning
+incorporate as many aspects as possible. Multi-task learning
 has shown its effectiveness to learn inductive knowledge among
 tasks and improve performance as well as generalization
 capability~\cite{caruana1993multitask}. Therefore, we propose a
@@ -555,11 +555,10 @@ hierarchical architecture of the chosen tasks. We follow this
 intuition to construct our model. Most technical indicators fall
 into four categories: trend, momentum, volatility and
 volume~\cite{kirkpatrick2010technical}. Since volume is included
-in input for all low level tasks and we assume that momentum
-information can be learned by high level task, we propose an
-architecture that using trend and volatility tasks as our low
-level tasks and price movement prediction (upward or downward) as
-the high level task.
+in input for all low-level tasks and we assume that momentum
+information can be learned by a high-level task, we propose an
+architecture that using trend and volatility tasks as our low-level tasks and price movement prediction (upward or downward) as
+the high-level task.
 
 % As an early work under this direction, the main idea is to test
 % effectiveness of multi-task framework on stock dataset rather
@@ -569,7 +568,7 @@ the high level task.
 % of our knowledge, we are the first work proposing a multi-task
 % neural network on stock market data.
 
-The ``Multi-task Market Price Learner(MMPL)'' contains two
+Multi-task Market Price Learner(MMPL) contains two
 levels, three modules of DARNNs. DARNNs~\cite{qin2017dual} are
 used as our basic module not only because of its capability of
 selecting relevant deriving series as well as temporal features,
@@ -595,11 +594,11 @@ Predictor described in section~\ref{sec:srp} as unary features.
 \end{figure}
 
 All three DARNN modules share the same raw market price data.
-Here we denote the time-series dataset as $\bX$ where
-$\bX=(\bx_1,\bx_2,\dots,\bx_T)\in \reals^{N\times T}$. Here
-$\bx^n=(x_1^n,x_2^n,\dots,x_T^n) \in \reals^T$ denotes a driving
+Here, we denote the time-series dataset as $\bX$ where
+$\bX=(\bx_1,\bx_2,\dots,\bx_T)\in \reals^{N\times T}$. We use
+$\bx^n=(x_1^n,x_2^n,\dots,x_T^n) \in \reals^T$ to denote a driving
 series of $T$ time-steps and $\bx_t=(x_t^1,x_t^2 ,\dots
-,x_t^N)\in \reals^N$ denotes a snapshot at time-step $t$ of all
+,x_t^N)\in \reals^N$ to denote a snapshot at time-step $t$ of all
 $N$ features.
 
 For both DARNN modules at the low level, the input matrix is a
